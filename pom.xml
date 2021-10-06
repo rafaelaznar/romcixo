@@ -57,12 +57,12 @@
         <dependency>
             <groupId>org.vibur</groupId>
             <artifactId>vibur-dbcp</artifactId>
-            <version>22.2</version>
+            <version>25.0</version>
         </dependency>
         <dependency>
             <groupId>org.vibur</groupId>
             <artifactId>vibur-object-pool</artifactId>
-            <version>22.2</version>
+            <version>25.0</version>
         </dependency>
 
     </dependencies>

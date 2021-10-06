@@ -25,20 +25,20 @@ public class ViburConnectionImplementation implements PoolInterface {
         oPool.setLogStackTraceForLongQueryExecution(true);
 
         oPool.setStatementCacheMaxSize(200);
-
-        oPool.start();
+        try {
+            oPool.start();
+        } catch (Exception e) {
+            System.out.print("error: " + e.getMessage());
+        }
     }
 
     @Override
     public Connection newConnection() throws SQLException {
-
         return (Connection) oPool.getConnection();
-
     }
 
     @Override
     public void closePool() throws SQLException {
-
         if (oPool != null) {
             oPool.close();
         }
