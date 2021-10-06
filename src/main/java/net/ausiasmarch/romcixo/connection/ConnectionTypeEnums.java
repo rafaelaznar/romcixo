@@ -1,4 +1,4 @@
-package net.ausiasmarch.minotus.connection;
+package net.ausiasmarch.romcixo.connection;
 
 public class ConnectionTypeEnums {
 

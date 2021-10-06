@@ -1,4 +1,4 @@
-package net.ausiasmarch.minotus.control;
+package net.ausiasmarch.romcixo.control;
 
 import com.google.gson.Gson;
 import java.io.FileNotFoundException;
@@ -13,10 +13,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.ausiasmarch.minotus.connection.ConnectionTypeEnums.TipoDeConexion;
-import net.ausiasmarch.minotus.connection.ConnectionFactory;
-
-import net.ausiasmarch.minotus.connection.GenericConnectionInterface;
+import net.ausiasmarch.romcixo.connection.ConnectionTypeEnums.TipoDeConexion;
+import net.ausiasmarch.romcixo.connection.ConnectionFactory;
+import net.ausiasmarch.romcixo.connection.GenericConnectionInterface;
 
 public class control extends HttpServlet {
 

@@ -3,11 +3,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>net.ausiasmarch</groupId>
-    <artifactId>minotus</artifactId>
+    <artifactId>romcixo</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
 
-    <name>minotus</name>
+    <name>romcixo</name>
 
     <properties>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>

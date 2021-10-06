@@ -1,4 +1,4 @@
-package net.ausiasmarch.minotus.connection;
+package net.ausiasmarch.romcixo.connection;
 
 import com.mysql.cj.jdbc.MysqlDataSource;
 import java.sql.Connection;

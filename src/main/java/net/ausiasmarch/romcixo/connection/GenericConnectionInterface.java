@@ -1,5 +1,5 @@
 
-package net.ausiasmarch.minotus.connection;
+package net.ausiasmarch.romcixo.connection;
 
 
 import java.sql.Connection;

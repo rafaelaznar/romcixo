@@ -1,6 +1,6 @@
-package net.ausiasmarch.minotus.connection;
+package net.ausiasmarch.romcixo.connection;
 
-import net.ausiasmarch.minotus.connection.ConnectionTypeEnums.TipoDeConexion;
+import net.ausiasmarch.romcixo.connection.ConnectionTypeEnums.TipoDeConexion;
 
 public class ConnectionFactory {
 
