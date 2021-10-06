@@ -88,16 +88,17 @@ public class control extends HttpServlet {
         Gson oGson = new Gson();
         GenericConnectionInterface oConnectionObject = null;
         String dbversion;
-        try ( PrintWriter out = response.getWriter()) {
 
+        try ( PrintWriter out = response.getWriter()) {
+            Class.forName("com.mysql.jdbc.Driver");
             PoolInterface oConnectionPool = null;
             oConnectionPool = PoolFactory.getPool(
-                    properties.getProperty("pool"),
-                    properties.getProperty("host"),
-                    properties.getProperty("port"),
-                    properties.getProperty("dbname"),
-                    properties.getProperty("login"),
-                    properties.getProperty("password"),
+                    properties.getProperty("connectionPool"),
+                    properties.getProperty("database.host"),
+                    properties.getProperty("database.port"),
+                    properties.getProperty("database.dbname"),
+                    properties.getProperty("database.username"),
+                    properties.getProperty("database.password"),
                     Integer.parseInt(properties.getProperty("databaseMinPoolSize")),
                     Integer.parseInt(properties.getProperty("databaseMaxPoolSize"))
             );

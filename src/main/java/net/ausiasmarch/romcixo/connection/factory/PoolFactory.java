@@ -17,7 +17,7 @@ public class PoolFactory {
 
     public static PoolInterface getPool(String poolName, String host, String port,String dbname,String login,String password,Integer databaseMinPoolSize, Integer databaseMaxPoolSize) throws SQLException {
         PoolInterface oConnectionInterface;
-        String connectionChain= getConnectionChain(host, password, dbname);
+        String connectionChain= getConnectionChain(host, port, dbname);
         switch (poolName) {
             case "Hikari":
                 oConnectionInterface = new HikariConnectionImplementation(connectionChain, login, password, databaseMinPoolSize,  databaseMaxPoolSize);
