@@ -5,7 +5,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class DriverManagerConnection implements GenericConnectionType {
+public class DriverManagerConnectionImplementation implements GenericConnectionInterface {
 
     @Override
     public Connection crearConexion(String host, String port, String dbname, String username, String pass) throws SQLException, ClassNotFoundException {

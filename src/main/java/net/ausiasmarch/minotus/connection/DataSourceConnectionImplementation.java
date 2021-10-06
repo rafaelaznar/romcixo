@@ -4,7 +4,7 @@ import com.mysql.cj.jdbc.MysqlDataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class DataSourceConnection implements GenericConnectionType {
+public class DataSourceConnectionImplementation implements GenericConnectionInterface {
 
     @Override
     public Connection crearConexion(String host, String port, String dbname, String username, String pass) throws SQLException, ClassNotFoundException {

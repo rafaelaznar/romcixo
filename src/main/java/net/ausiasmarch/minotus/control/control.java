@@ -14,8 +14,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.ausiasmarch.minotus.connection.ConnectionTypeEnums.TipoDeConexion;
-import static net.ausiasmarch.minotus.connection.ConnectionTypeFactory.getConnectionType;
-import net.ausiasmarch.minotus.connection.GenericConnectionType;
+import net.ausiasmarch.minotus.connection.ConnectionFactory;
+
+import net.ausiasmarch.minotus.connection.GenericConnectionInterface;
 
 public class control extends HttpServlet {
 
@@ -86,17 +87,17 @@ public class control extends HttpServlet {
         loadResourceProperties();
         doCORS(request, response);
         Gson oGson = new Gson();
-        GenericConnectionType oConnectionType = null;
+        GenericConnectionInterface oConnectionObject = null;
         String dbversion;
         try ( PrintWriter out = response.getWriter()) {
             if (properties.getProperty("database.connection").equalsIgnoreCase("drivermanager")) {
-                oConnectionType = getConnectionType(TipoDeConexion.DriverManager);
+                oConnectionObject = ConnectionFactory.getConnectionType(TipoDeConexion.DriverManager);
             } else if (properties.getProperty("database.connection").equalsIgnoreCase("datasource")) {
-                oConnectionType = getConnectionType(TipoDeConexion.DataSource);
+                oConnectionObject = ConnectionFactory.getConnectionType(TipoDeConexion.DataSource);
             } else {
                 throw new Exception("connection not allowed");
             }
-            Connection oConnection = oConnectionType.crearConexion(properties.getProperty("database.host"), properties.getProperty("database.port"), properties.getProperty("database.dbname"), properties.getProperty("database.username"), properties.getProperty("database.password"));
+            Connection oConnection = oConnectionObject.crearConexion(properties.getProperty("database.host"), properties.getProperty("database.port"), properties.getProperty("database.dbname"), properties.getProperty("database.username"), properties.getProperty("database.password"));
             Statement stmt = oConnection.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT version()");
             if (rs.next()) {
