@@ -89,29 +89,24 @@ public class control extends HttpServlet {
         GenericConnectionType oConnectionType = null;
         String dbversion;
         try ( PrintWriter out = response.getWriter()) {
-            String op = request.getParameter("op");
-            if (op != null) {
-                if (op.equalsIgnoreCase("drivermanager")) {
-                    oConnectionType = getConnectionType(TipoDeConexion.DriverManager);
-                } else if (op.equalsIgnoreCase("datasource")) {
-                    oConnectionType = getConnectionType(TipoDeConexion.DataSource);
-                } else {
-                    throw new Exception("operation not allowed");
-                }
-                Connection oConnection = oConnectionType.crearConexion(properties.getProperty("database.host"), properties.getProperty("database.port"), properties.getProperty("database.dbname"), properties.getProperty("database.username"), properties.getProperty("database.password"));
-                Statement stmt = oConnection.createStatement();
-                ResultSet rs = stmt.executeQuery("SELECT version()");
-                if (rs.next()) {
-                    dbversion = "Database Version : " + rs.getString(1);
-                } else {
-                    throw new Exception("Error al obtener la versión de la base de datos");
-                }
-                oConnection.close();
-                response.setStatus(HttpServletResponse.SC_OK);
-                out.print(oGson.toJson(dbversion));
+            if (properties.getProperty("database.connection").equalsIgnoreCase("drivermanager")) {
+                oConnectionType = getConnectionType(TipoDeConexion.DriverManager);
+            } else if (properties.getProperty("database.connection").equalsIgnoreCase("datasource")) {
+                oConnectionType = getConnectionType(TipoDeConexion.DataSource);
             } else {
-                throw new Exception("operation not allowed");
+                throw new Exception("connection not allowed");
             }
+            Connection oConnection = oConnectionType.crearConexion(properties.getProperty("database.host"), properties.getProperty("database.port"), properties.getProperty("database.dbname"), properties.getProperty("database.username"), properties.getProperty("database.password"));
+            Statement stmt = oConnection.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT version()");
+            if (rs.next()) {
+                dbversion = "Database Version : " + rs.getString(1);
+            } else {
+                throw new Exception("Error al obtener la versión de la base de datos");
+            }
+            oConnection.close();
+            response.setStatus(HttpServletResponse.SC_OK);
+            out.print(oGson.toJson(dbversion));
         } catch (Exception ex) {
             PrintWriter out = response.getWriter();
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
