@@ -1,9 +1,13 @@
 package net.ausiasmarch.romcixo.connection;
 
-public class ConnectionTypeEnums {
+public class ConnectionData {
 
     public static enum TipoDeConexion {
         DataSource,
         DriverManager
     };
+
+
+
+
 }
