@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletConfig;
@@ -25,6 +26,14 @@ public class control extends HttpServlet {
 
     Properties properties = new Properties();
     PoolInterface oConnectionPool = null;
+
+    private void opDelay(Integer iLast) {
+        try {
+            Thread.sleep(iLast);
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        }
+    }
 
     private void loadResourceProperties() throws FileNotFoundException, IOException {
         // https://stackoverflow.com/questions/44499306/how-to-read-application-properties-file-without-environment?noredirect=1&lq=1
@@ -114,10 +123,10 @@ public class control extends HttpServlet {
         Gson oGson = new Gson();
         String dbversion = null;
         try ( PrintWriter out = response.getWriter()) {
-
             Connection oConnection = null;
             try {
                 oConnection = oConnectionPool.newConnection();
+                opDelay(new Random().nextInt(5000) + 1);
                 Statement stmt = oConnection.createStatement();
                 ResultSet rs = stmt.executeQuery("SELECT version()");
                 if (rs.next()) {
