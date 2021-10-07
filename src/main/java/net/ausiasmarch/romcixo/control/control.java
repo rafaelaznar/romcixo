@@ -7,8 +7,12 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -20,6 +24,7 @@ import net.ausiasmarch.romcixo.connection.interfaces.PoolInterface;
 public class control extends HttpServlet {
 
     Properties properties = new Properties();
+    PoolInterface oConnectionPool = null;
 
     private void loadResourceProperties() throws FileNotFoundException, IOException {
         // https://stackoverflow.com/questions/44499306/how-to-read-application-properties-file-without-environment?noredirect=1&lq=1
@@ -75,23 +80,11 @@ public class control extends HttpServlet {
     }
 
     @Override
-    protected void doOptions(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        doCORS(request, response);
-    }
-
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        loadResourceProperties();
-        doCORS(request, response);
-        Gson oGson = new Gson();
-        GenericConnectionInterface oConnectionObject = null;
-        String dbversion;
-
-        try ( PrintWriter out = response.getWriter()) {
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        try {
+            loadResourceProperties();
             Class.forName("com.mysql.jdbc.Driver");
-            PoolInterface oConnectionPool = null;
             oConnectionPool = PoolFactory.getPool(
                     properties.getProperty("connectionPool"),
                     properties.getProperty("database.host"),
@@ -102,23 +95,57 @@ public class control extends HttpServlet {
                     Integer.parseInt(properties.getProperty("databaseMinPoolSize")),
                     Integer.parseInt(properties.getProperty("databaseMaxPoolSize"))
             );
-            Connection oConnection = oConnectionPool.newConnection();
-            Statement stmt = oConnection.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT version()");
-            if (rs.next()) {
-                dbversion = "Database Version : " + rs.getString(1);
-            } else {
-                throw new Exception("Error al obtener la versión de la base de datos");
-            }
-            oConnection.close();
-            oConnectionPool.closePool();
+        } catch (SQLException | IOException | ClassNotFoundException ex) {
+            System.out.print(ex.getMessage());
+        }
+    }
 
+    @Override
+    protected void doOptions(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        doCORS(request, response);
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        doCORS(request, response);
+        Gson oGson = new Gson();
+        String dbversion = null;
+        try ( PrintWriter out = response.getWriter()) {
+
+            Connection oConnection = null;
+            try {
+                oConnection = oConnectionPool.newConnection();
+                Statement stmt = oConnection.createStatement();
+                ResultSet rs = stmt.executeQuery("SELECT version()");
+                if (rs.next()) {
+                    dbversion = "Database Version : " + rs.getString(1);
+                } else {
+                    throw new Exception("Error al obtener la versión de la base de datos");
+                }
+            } catch (Exception ex) {
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                out.print(oGson.toJson(ex.getMessage()));
+            } finally {
+                oConnection.close();
+            }
             response.setStatus(HttpServletResponse.SC_OK);
             out.print(oGson.toJson(dbversion));
         } catch (Exception ex) {
             PrintWriter out = response.getWriter();
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             out.print(oGson.toJson(ex.getMessage()));
+        }
+    }
+
+    @Override
+    public void destroy() {
+        try {
+            oConnectionPool.closePool();
+        } catch (SQLException ex) {
+            System.out.print(ex.getMessage());
         }
     }
 
